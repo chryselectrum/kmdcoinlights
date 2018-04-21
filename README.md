@@ -1,12 +1,10 @@
 # KMD SPEED TEST
 Live transaction visualization for Komodo (speed test), Bitcoin, Ethereum, Litecoin
 
-Adapted from:
-
-https://github.com/bra1n/cryptolights
+Adapted from: https://github.com/bra1n/cryptolights
 
 
-## ORIGINAL README CONTINUES
+## NOTES FROM THE ORIGINAL README
 
 
 ## Explanation

@@ -7,7 +7,7 @@ function getTime(){
 
 XRB = class XRB {
   constructor() {
-    this.baseUrls = ['http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmd.explorer.supernet.org/'];
+    this.baseUrls = ['http://pizza.meshbits.io/', 'http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmd.explorer.supernet.org/'];
 	this.baseUrl = "https://kmd.explorer.supernet.org/";		
 	
 	//this.socketUrl = "wss://kmd.explorer.supernet.org/socket.io/"			
@@ -26,10 +26,9 @@ XRB = class XRB {
 	var baseLength = this.baseUrls.length;		
 	for (var i = 0; i < baseLength; i++)	
 	{	
-		//console.log('i: ' + i + ', baseUrl: ' + this.baseUrls[i]);		
-		if (i >= baseLength) 
-			return;	
-		var socket = io(this.baseUrls[i]); // ,{ forceNew: true }
+		//console.log('i: ' + i + ', baseUrl: ' + this.baseUrls[i]);				
+		
+		var socket = io(this.baseUrls[i]); // ,{ forceNew: true }						
 		
 		console.log(socket);
 		socket.on('connect', function () {

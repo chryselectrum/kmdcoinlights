@@ -13,8 +13,7 @@ function onMessage (txCb, blockCb, socket) {
 		socket.emit('subscribe', 'inv');
 	});
 	socket.on('block', function (block) {
-		console.log('onBlock event fired: ' + socket.io.uri + ', ' + getTime() + ', ' + block + ', block data:');
-		console.log(block);			
+		console.log('onBlock event fired: ' + socket.io.uri + ', ' + getTime() + ', ' + block);		
 		blockCb({ count: block ? block.length : 0 });
 	});
 	socket.on('tx', function (payload) {
@@ -34,8 +33,7 @@ XRB = class XRB {
   constructor() {
     this.baseUrls = ['http://pizza.meshbits.io/', 'http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmdexplorer.ru/'];
 	//this.baseUrls = ['https://kmd.explorer.supernet.org/'];	
-	
-	//this.socketUrl = "wss://kmd.explorer.supernet.org/socket.io/"			
+		
     this.ws = null;    
     this.txApi = this.baseUrl + "api/tx/";
     this.blockApi = this.baseUrl + "api/block/";
@@ -43,24 +41,24 @@ XRB = class XRB {
     this.txFeeTimestamp = 0;
     this.txFeeInterval = 3000; // how often to query for a fee
     this.donationAddress = "LiVcWyeoPXNYekcdFkDr64QLG3u9G8BgLs";
+	this.sockets = [];
   }    
 
   start(txCb, blockCb) {    
-	
-	var sockets = [null, null];		
+		
 	var baseLength = this.baseUrls.length;		
 	for (var i = 0; i < baseLength; i++) {	
 		//console.log('i: ' + i + ', baseUrl: ' + this.baseUrls[i]);				
-		var socket = io(this.baseUrls[i], { forceNew: true }	);
+		var socket = io(this.baseUrls[i], { forceNew: true } );
 		onMessage(txCb, blockCb, socket);				
-		sockets[i] = socket;
+		this.sockets[i] = socket;
 	}			
   }
 
   stop() {
 	  
     for (var i = 0; i < this.baseUrls.length; i++)
-		if (socket[i]) sockets[i].emit('end');		
+		if (this.sockets[i]) this.sockets[i].emit('end');		
   }
 
 };

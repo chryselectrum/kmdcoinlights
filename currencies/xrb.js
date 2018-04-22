@@ -11,13 +11,14 @@ function onMessage (txCb, blockCb, socket) {
 	socket.on('connect', function () {
 		console.log('connected: ' + socket.io.uri);
 		socket.emit('subscribe', 'inv');
+		socket.emit('subscribe', 'sync');
 	});
 	socket.on('block', function (block) {
-		console.log('onBlock event fired: ' + socket.io.uri + ', ' + getTime() + ', ' + block);		
+		//console.log('onBlock event fired: ' + socket.io.uri + ', ' + getTime() + ', ' + block);		
 		blockCb({ count: block ? block.length : 0 });
 	});
 	socket.on('tx', function (payload) {
-		console.log('onTx event fired: ' + socket.io.uri + ', ' + getTime() + ', vout: ' + payload.valueOut);		
+		//console.log('onTx event fired: ' + socket.io.uri + ', ' + getTime() + ', vout: ' + payload.valueOut);		
 		txCb({
 			amount: !isNaN(parseFloat(payload.valueOut)) && isFinite(payload.valueOut) ? payload.valueOut : 0,
 			fee: 0, // Math.random() * Math.abs(this.txFees[0] - this.txFees[1]) + Math.min.apply(0, this.txFees),

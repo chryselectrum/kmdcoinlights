@@ -2,10 +2,10 @@
 var currencies, currencyFormat, initialize, prices, showBlock, showHelp, showTx, stats, updateLanes, updatePrices, updateStats;
 
 currencies = {
-  xrb: new XRB(),
   btc: new BTC(),
   eth: new ETH(),
-  ltc: new LTC()  
+  ltc: new LTC(),
+  xrb: new XRB()
 };
 
 prices = {};
@@ -47,9 +47,8 @@ showBlock = function(engine, currency, block) {
 updatePrices = function(currencies) {
   var currencyAPI, marketcapAPI;
   currencyAPI = 'https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=';
-  $.get(currencyAPI + currencies.join(',').replace('xrb','kmd').toUpperCase(), function(data) {	
+  $.get(currencyAPI + currencies.join(',').replace('xrb','kmd').toUpperCase(), function(data) {
 	data['XRB'] = data['KMD']
-	//console.log(data);
     var currency, price, results;
     if (data) {
       results = [];
@@ -83,7 +82,9 @@ updateStats = function(currency, value = 0, fee = 0) {
       last: [],
       count: 0
     };
-  }
+  }  
+  // increase number of unverified TX
+  stats[currency].count++;
   
   // calculate stats for last 60s
   last = stats[currency].last;

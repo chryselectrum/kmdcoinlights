@@ -5,10 +5,35 @@ function getTime(){
     return new Date(Date.now());
 }
 
+function onMessage (txCb, blockCb, socket) {
+	
+	console.log(socket);
+	socket.on('connect', function () {
+		console.log('connected: ' + socket.io.uri);
+		socket.emit('subscribe', 'inv');
+	});
+	socket.on('block', function (block) {
+		console.log('onBlock event fired: ' + socket.io.uri + ', ' + getTime() + ', ' + block + ', block data:');
+		console.log(block);			
+		blockCb({ count: block ? block.length : 0 });
+	});
+	socket.on('tx', function (payload) {
+		console.log('onTx event fired: ' + socket.io.uri + ', ' + getTime() + ', vout: ' + payload.valueOut);		
+		txCb({
+			amount: !isNaN(parseFloat(payload.valueOut)) && isFinite(payload.valueOut) ? payload.valueOut : 0,
+			fee: 0, // Math.random() * Math.abs(this.txFees[0] - this.txFees[1]) + Math.min.apply(0, this.txFees),
+			link: this.baseURL + 'tx/' + payload.txid,
+			donation: !!payload.vout.find((vout) => {
+			  return Object.keys(vout)[0] === this.donationAddress;
+			})
+		});				
+	});
+}
+
 XRB = class XRB {
   constructor() {
-    this.baseUrls = ['http://pizza.meshbits.io/', 'http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmd.explorer.supernet.org/'];
-	this.baseUrl = "https://kmd.explorer.supernet.org/";		
+    this.baseUrls = ['http://pizza.meshbits.io/', 'http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmdexplorer.ru/'];
+	//this.baseUrls = ['https://kmd.explorer.supernet.org/'];	
 	
 	//this.socketUrl = "wss://kmd.explorer.supernet.org/socket.io/"			
     this.ws = null;    
@@ -24,36 +49,12 @@ XRB = class XRB {
 	
 	var sockets = [null, null];		
 	var baseLength = this.baseUrls.length;		
-	for (var i = 0; i < baseLength; i++)	
-	{	
+	for (var i = 0; i < baseLength; i++) {	
 		//console.log('i: ' + i + ', baseUrl: ' + this.baseUrls[i]);				
-		
-		var socket = io(this.baseUrls[i]); // ,{ forceNew: true }						
-		
-		console.log(socket);
-		socket.on('connect', function () {
-			socket.emit('subscribe', 'inv');
-		});
-		socket.on('block', function (block) {
-			console.log('onBlock event fired: ' + getTime() + ', ' + block + ', block data:');
-			console.log(block);
-			return blockCb({ count: block ? block.length : 0 });
-		});
-		socket.on('tx', function (payload) {
-			console.log('onTx event fired: ' + getTime() + ', vout: ' + payload.valueOut);		
-			return txCb({
-				amount: !isNaN(parseFloat(payload.valueOut)) && isFinite(payload.valueOut) ? payload.valueOut : 0,
-				fee: 0, // Math.random() * Math.abs(this.txFees[0] - this.txFees[1]) + Math.min.apply(0, this.txFees),
-				link: this.baseURL + 'tx/' + payload.txid,
-				donation: !!payload.vout.find((vout) => {
-				  return Object.keys(vout)[0] === this.donationAddress;
-				})
-			});				
-		});
+		var socket = io(this.baseUrls[i], { forceNew: true }	);
+		onMessage(txCb, blockCb, socket);				
 		sockets[i] = socket;
-	}
-	//console.log(sockets);		
-		
+	}			
   }
 
   stop() {

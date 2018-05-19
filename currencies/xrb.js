@@ -19,6 +19,7 @@ function onMessage (txCb, blockCb, socket) {
 	});
 	socket.on('tx', function (payload) {
 		//console.log('onTx event fired: ' + socket.io.uri + ', ' + getTime() + ', vout: ' + payload.valueOut);		
+		//console.log(payload);
 		txCb({
 			amount: !isNaN(parseFloat(payload.valueOut)) && isFinite(payload.valueOut) ? payload.valueOut : 0,
 			fee: 0, // Math.random() * Math.abs(this.txFees[0] - this.txFees[1]) + Math.min.apply(0, this.txFees),
@@ -32,7 +33,7 @@ function onMessage (txCb, blockCb, socket) {
 
 XRB = class XRB {
   constructor() {
-    this.baseUrls = ['http://pizza.meshbits.io/', 'http://txscl.meshbits.io/', 'http://txscl000.meshbits.io/', 'https://kmdexplorer.ru/'];
+    this.baseUrls = ['http://txscl000.meshbits.io','http://txscl001.meshbits.io/','http://txscl002.meshbits.io/','http://txscl003.meshbits.io/','http://txscl004.meshbits.io/','http://txscl005.meshbits.io/','http://txscl006.meshbits.io/','http://txscl007.meshbits.io/', 'https://kmdexplorer.ru/'];
 	//this.baseUrls = ['https://kmd.explorer.supernet.org/'];	
 		
     this.ws = null;    
